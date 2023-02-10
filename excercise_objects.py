@@ -26,3 +26,18 @@ class Workout:
 
     def add_exercise(self, exercise: Exercise):
         self.exercises.append(exercise)
+
+
+@dataclass
+class Ingredient:
+    name: str
+    weight_gs: float
+
+
+@dataclass
+class Meal:
+    name: str
+    ingredients: list[Ingredient] = field(default_factory=list)
+
+    def add_ingredient(self, ingredient):
+        self.ingredients.append(ingredient)

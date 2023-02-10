@@ -1,7 +1,6 @@
 import datetime
 from collections import namedtuple
-from excercise_objects import Set, Exercise, Workout
-
+from excercise_objects import Set, Exercise, Workout, Meal, Ingredient
 
 CURRENTLY_IMPLEMENTED = 1  # "Debug" value for me to change as I implement more features
 APP_OPTION = namedtuple("APP_OPTION", ["label", "function"])
@@ -15,7 +14,11 @@ def log_workout(workout: Workout):
     pass
 
 
-def create_set(set_num: int):
+def log_meal(meal: Meal):
+    pass
+
+
+def create_set(set_num: int) -> Set:
     set_weight = input("Weight: ")
     set_num_reps = input("Number of reps: ")
     set = Set(set_num, set_weight, set_num_reps)
@@ -54,8 +57,24 @@ def view_workouts():
     pass
 
 
-def create_meal():
-    pass
+def create_ingredient() -> Ingredient:
+    ingr_name = input("Ingredient name: ")
+    ingr_weight = input("Ingredient weight: ")
+    ingr_weight = float(ingr_weight)
+    ingr = Ingredient(ingr_name, ingr_weight)
+    return ingr
+
+
+def create_meal() -> Meal:
+    meal_name = input("Meal name: ")
+    meal = Meal(meal_name)
+    while True:
+        ingr = create_ingredient()
+        meal.add_ingredient(ingr)
+        ans = input("Another ingredient? (y/n): ")
+        if ans == "n":
+            break
+    return Meal
 
 
 def view_meals():
@@ -81,7 +100,7 @@ OPTIONS = {
     4: APP_OPTION("View Food Logs", view_meals),
     5: APP_OPTION("Look up caloric value of excercise", search_exercise),
     6: APP_OPTION("Look up caloric value of food", search_food),
-    7: APP_OPTION("Look up Supplement prices", search_supplement),
+    7: APP_OPTION("Look up supplement prices", search_supplement),
 }
 NUM_APP_OPTIONS = len(OPTIONS)
 
