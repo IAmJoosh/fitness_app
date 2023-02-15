@@ -4,7 +4,7 @@ import datetime
 
 @dataclass
 class Set:
-    number: int
+    set_num: int
     weight_kgs: float
     num_reps: int
 
@@ -20,7 +20,7 @@ class Exercise:
 
 @dataclass
 class Workout:
-    date: datetime.date
+    date: datetime.datetime
     name: str
     exercises: list[Exercise] = field(default_factory=list)
 

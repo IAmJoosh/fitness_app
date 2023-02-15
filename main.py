@@ -1,21 +1,42 @@
 import datetime
+from pymongo import MongoClient
 from collections import namedtuple
+from dataclasses import asdict
 from excercise_objects import Set, Exercise, Workout, Meal, Ingredient
+
+# MongoDB stuff
+URI = "mongodb://localhost:27017"
+WORKOUT_COLLECTION = "workouts"
+MEAL_COLLECTION = "meals"
 
 CURRENTLY_IMPLEMENTED = 1  # "Debug" value for me to change as I implement more features
 APP_OPTION = namedtuple("APP_OPTION", ["label", "function"])
 
 
-def init_db():
-    pass
+def init_db(uri):
+    global db
+    client = MongoClient(uri)
+    db = client["fitnessApp"]
 
 
-def log_workout(workout: Workout):
-    pass
+def log_workout(workout: Workout) -> bool:
+    global db
+    workouts = db[WORKOUT_COLLECTION]
+    workout = asdict(workout)
+    check = workouts.insert_one(workout).inserted_id
+    if check is not None:
+        return True
+    return False
 
 
-def log_meal(meal: Meal):
-    pass
+def log_meal(meal: Meal) -> bool:
+    global db
+    meals = db[MEAL_COLLECTION]
+    meal = asdict(meal)
+    check = meals.insert_one(meal).inserted_id
+    if check is not None:
+        return True
+    return False
 
 
 def create_set(set_num: int) -> Set:
@@ -42,7 +63,10 @@ def create_exercise() -> Exercise:
 
 def create_workout() -> Workout:
     workout_name = input("Workout name: ")
-    date = datetime.date.today()
+    # We do this in this convoluted way because MongoDB needs to store it as datetime.datetime
+    # But we only care about the date, not the time
+    # That's why we set the time portion to 0,0
+    date = datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0))
     workout = Workout(date, workout_name)
     while True:
         exc = create_exercise()
@@ -111,6 +135,7 @@ def display_options(options: dict):
 
 
 def main():
+    init_db(URI)
     display_options(OPTIONS)
     option = input("Select an option by entering its number:")
 
